@@ -1,0 +1,12 @@
+{
+  "name": "Calculadora de salmuera equilibrada",
+  "short_name": "Salmuera",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F2EAD3",
+  "theme_color": "#8B6A42",
+  "icons": [
+    { "src": "https://lh3.googleusercontent.com/d/1jvDV0i8t1OeuUDxo3OjlB7I9xtFSmgZI", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
