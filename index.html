@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Salmuera · Que Pasa Joshua</title>
+<meta name="description" content="Calculadora de salmuera equilibrada de Que Pasa Joshua">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Salmuera">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#8B6A42">
+<link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1jvDV0i8t1OeuUDxo3OjlB7I9xtFSmgZI">
+<link rel="icon" href="https://lh3.googleusercontent.com/d/1jvDV0i8t1OeuUDxo3OjlB7I9xtFSmgZI">
+<link rel="manifest" href="manifest.webmanifest">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#F2EAD3;color:#3A2A20;font:17px/1.5 Jost,system-ui,sans-serif}
+[hidden]{display:none!important}
+header{background:#8B6A42;color:#F2EAD3;padding:calc(12px + env(safe-area-inset-top)) 18px 12px;display:flex;align-items:center;gap:12px}
+header img{width:58px}
+.tt{font:400 22px/1 Anton,Impact,sans-serif;text-transform:uppercase}
+header small{display:block;font:500 11px Jost,sans-serif;letter-spacing:.14em;text-transform:uppercase;opacity:.85;margin-top:3px}
+main{max-width:440px;margin:0 auto;padding:24px 20px 40px}
+h1{font:400 40px/1 Anton,Impact,sans-serif;text-transform:uppercase;color:#C24F31;margin-bottom:10px}
+label{display:block;font-weight:600;margin:18px 0 8px}
+input{width:100%;font:600 20px Jost,sans-serif;color:#4A2116;background:#FFFCF5;border:2px solid rgba(74,33,22,.2);border-radius:16px;padding:14px 16px;min-height:60px}
+input:focus,button:focus-visible,a:focus-visible{outline:3px solid #F2B705;outline-offset:2px}
+.b{display:block;width:100%;text-align:center;margin-top:14px;border:0;border-radius:999px;padding:15px 20px;min-height:58px;font:400 21px Anton,Impact,sans-serif;text-transform:uppercase;text-decoration:none;cursor:pointer}
+.c{background:#E2654A;color:#FFF8EE;box-shadow:0 4px 0 #B94A33}
+.c:disabled{opacity:.5}
+.l{background:transparent;border:2px solid #4A2116;color:#4A2116}
+.err{background:#FBE1DA;border-left:6px solid #C24F31;color:#7A2414;border-radius:14px;padding:12px 14px;margin-top:14px;font-weight:600;font-size:16px}
+.tip{background:#FBE9A8;border-left:6px solid #F2B705;border-radius:14px;padding:12px 14px;margin-top:18px;font-size:16px;color:#4A2116}
+.cargando{position:fixed;inset:0;display:grid;place-items:center;background:#F2EAD3;font:400 24px Anton,Impact,sans-serif;text-transform:uppercase;color:#8B6A42}
+</style>
+</head>
+<body>
+<div id="gate" hidden>
+  <header><img src="https://lh3.googleusercontent.com/d/1aoVVeaJ6M14Zs9zjcZ7FY8QM8Wt2-4Et" alt=""><div><p class="tt">Salmuera equilibrada</p><small>Que Pasa Joshua</small></div></header>
+  <main>
+    <h1>Bienvenido a tu calculadora</h1>
+    <p>Escribe la llave de tu compra <b>una sola vez</b>. Después abre sola.</p>
+    <form id="f">
+      <label for="k">Tu llave de compra</label>
+      <input id="k" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Pégala aquí">
+      <p class="err" id="err" hidden>Esa llave no funcionó. Revísala y vuelve a intentar.</p>
+      <button class="b c" id="go" type="submit">Entrar</button>
+    </form>
+    <div class="tip"><b>¿Dónde está mi llave?</b> En Whop: entra a tu cuenta, abre tus compras y busca la calculadora. Ahí está tu llave; cópiala y pégala aquí.</div>
+    <a class="b l" id="comprar" href="#" target="_blank" rel="noopener">¿Todavía no la tienes? Cómprala aquí</a>
+  </main>
+</div>
+<div class="cargando" id="load" hidden>Cargando…</div>
+<script>
+(function(){
+  var EXEC='https://script.google.com/macros/s/AKfycbzVqQJQUZoXJO4HqXYsLQVDLHY6TSYNVLRaigmks2MSQnXiSIERUZPhXtnztswCyjI-/exec';
+  var COMPRAR='https://whop.com/';
+  var KEY='qpj-llave', COPIA='qpj-app';
+  var HEAD='<link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1jvDV0i8t1OeuUDxo3OjlB7I9xtFSmgZI"><link rel="icon" href="https://lh3.googleusercontent.com/d/1jvDV0i8t1OeuUDxo3OjlB7I9xtFSmgZI"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Salmuera">';
+  var $=function(id){return document.getElementById(id)};
+  $('comprar').href=COMPRAR;
+  function get(k){try{return localStorage.getItem(k)||''}catch(e){return ''}}
+  function set(k,v){try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}}
+  function puerta(msg){$('load').hidden=true;$('gate').hidden=false;if(msg){$('err').textContent=msg;$('err').hidden=false}else{$('err').hidden=true}}
+  function pintar(html){html=html.replace('</head>',HEAD+'</head>').replace(/<title>[^<]*<.title>/,'<title>Salmuera · Que Pasa Joshua</title>');document.open();document.write(html);document.close();}
+  function pedir(k){return fetch(EXEC+'?app='+encodeURIComponent(k)).then(function(r){return r.json()})}
+  var MALA='Esa llave no funcionó. Revísala y vuelve a intentar.';
+  $('f').addEventListener('submit',function(ev){
+    ev.preventDefault();
+    var k=$('k').value.trim(); if(!k){puerta(MALA);return}
+    var b=$('go');b.disabled=true;b.textContent='Verificando…';
+    pedir(k).then(function(d){
+      if(d&&d.ok&&d.html){set(KEY,k);set(COPIA,d.html);pintar(d.html)}else{puerta(MALA)}
+    }).catch(function(){puerta('No pudimos verificar ahora. Revisa tu internet y vuelve a intentar.')})
+    .then(function(){b.disabled=false;b.textContent='Entrar'});
+  });
+  var k=get(KEY);
+  if(!k){puerta('');return}
+  $('load').hidden=false;
+  pedir(k).then(function(d){
+    if(d&&d.ok&&d.html){set(COPIA,d.html);pintar(d.html)}
+    else{set(KEY,'');set(COPIA,'');puerta('Tu llave ya no está activa. Si crees que es un error, escríbeme.')}
+  }).catch(function(){var c=get(COPIA); if(c) pintar(c); else puerta('No pudimos abrir la calculadora. Revisa tu internet.')});
+})();
+</script>
+</body>
+</html>
