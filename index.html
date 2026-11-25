@@ -57,7 +57,7 @@ input:focus,button:focus-visible,a:focus-visible{outline:3px solid #F2B705;outli
 (function(){
   var EXEC='https://script.google.com/macros/s/AKfycbzVqQJQUZoXJO4HqXYsLQVDLHY6TSYNVLRaigmks2MSQnXiSIERUZPhXtnztswCyjI-/exec';
   var COMPRAR='https://whop.com/que-pasa-joshua/salmuera/';
-  var KEY='qpj-llave', COPIA='qpj-app';
+  var KEY='qpj-llave', COPIA='qpj-app', VISTO='qpj-ok', SIN_RED=30*864e5;
   var HEAD='<link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1jvDV0i8t1OeuUDxo3OjlB7I9xtFSmgZI"><link rel="icon" href="https://lh3.googleusercontent.com/d/1jvDV0i8t1OeuUDxo3OjlB7I9xtFSmgZI"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Salmuera">';
   var $=function(id){return document.getElementById(id)};
   $('comprar').href=COMPRAR;
@@ -65,14 +65,14 @@ input:focus,button:focus-visible,a:focus-visible{outline:3px solid #F2B705;outli
   function set(k,v){try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}}
   function puerta(msg){$('load').hidden=true;$('gate').hidden=false;if(msg){$('err').textContent=msg;$('err').hidden=false}else{$('err').hidden=true}}
   function pintar(html){html=html.replace('</head>',HEAD+'</head>').replace(/<title>[^<]*<.title>/,'<title>Salmuera · Que Pasa Joshua</title>');document.open();document.write(html);document.close();}
-  function pedir(k){return fetch(EXEC+'?app='+encodeURIComponent(k)).then(function(r){return r.json()})}
+  function pedir(k){return fetch(EXEC,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({llave:k})}).then(function(r){return r.json()})}
   var MALA='Esa llave no funcionó. Revísala y vuelve a intentar.';
   $('f').addEventListener('submit',function(ev){
     ev.preventDefault();
     var k=$('k').value.trim(); if(!k){puerta(MALA);return}
     var b=$('go');b.disabled=true;b.textContent='Verificando…';
     pedir(k).then(function(d){
-      if(d&&d.ok&&d.html){set(KEY,k);set(COPIA,d.html);pintar(d.html)}else{puerta(MALA)}
+      if(d&&d.ok&&d.html){set(KEY,k);set(COPIA,d.html);set(VISTO,String(Date.now()));pintar(d.html)}else{puerta(MALA)}
     }).catch(function(){puerta('No pudimos verificar ahora. Revisa tu internet y vuelve a intentar.')})
     .then(function(){b.disabled=false;b.textContent='Entrar'});
   });
@@ -80,9 +80,9 @@ input:focus,button:focus-visible,a:focus-visible{outline:3px solid #F2B705;outli
   if(!k){puerta('');return}
   $('load').hidden=false;
   pedir(k).then(function(d){
-    if(d&&d.ok&&d.html){set(COPIA,d.html);pintar(d.html)}
-    else{set(KEY,'');set(COPIA,'');puerta('Tu llave ya no está activa. Si crees que es un error, escríbeme.')}
-  }).catch(function(){var c=get(COPIA); if(c) pintar(c); else puerta('No pudimos abrir la calculadora. Revisa tu internet.')});
+    if(d&&d.ok&&d.html){set(COPIA,d.html);set(VISTO,String(Date.now()));pintar(d.html)}
+    else{set(KEY,'');set(COPIA,'');set(VISTO,'');puerta('Tu llave ya no está activa. Tu preparación sigue guardada en este celular: entra con una llave activa y la encuentras igual.')}
+  }).catch(function(){var c=get(COPIA),v=+get(VISTO)||0; if(c&&Date.now()-v<SIN_RED) pintar(c); else puerta('Conéctate a internet para abrir la calculadora. Tu preparación sigue guardada.')});
 })();
 </script>
 </body>
